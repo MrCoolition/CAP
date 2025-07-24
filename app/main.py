@@ -169,7 +169,13 @@ def main():
         logger.info("Image captured")
         image_bytes = picture.getvalue()
         image_id = save_image(conn, user_id, image_bytes)
-        st.image(image_bytes, caption="Captured image", use_column_width=True)
+        # ``use_column_width`` was deprecated in Streamlit 1.32. Replace with
+        # the recommended ``use_container_width`` argument.
+        st.image(
+            image_bytes,
+            caption="Captured image",
+            use_container_width=True,
+        )
 
         with st.spinner("Processing image..."):
             logger.info("Running OCR")
