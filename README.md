@@ -15,13 +15,16 @@ Install dependencies:
 pip install -r requirements.txt
 ```
 
-The OCR functionality requires the Tesseract engine. On Ubuntu install it with:
+The OCR functionality uses the Tesseract engine if available.
+On Ubuntu install it with:
 
 ```bash
 sudo apt-get install tesseract-ocr
 ```
 
 On Windows download it from [https://github.com/tesseract-ocr/tesseract](https://github.com/tesseract-ocr/tesseract) and set the `TESSERACT_CMD` environment variable to the installed binary path if it's not in your `PATH`.
+
+If you are deploying to an environment where system packages cannot be installed (e.g. Streamlit Community Cloud), include a PyPI package that bundles Tesseract in your `requirements.txt` or rely on the GPT Vision fallback built into the app. When Tesseract is placed in a custom location, set the `TESSERACT_CMD` variable so `pytesseract` can find it.
 
 Run the app locally:
 ```bash
