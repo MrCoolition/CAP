@@ -15,10 +15,20 @@ Install dependencies:
 pip install -r requirements.txt
 ```
 
+The OCR functionality requires the Tesseract engine. On Ubuntu install it with:
+
+```bash
+sudo apt-get install tesseract-ocr
+```
+
+On Windows download it from [https://github.com/tesseract-ocr/tesseract](https://github.com/tesseract-ocr/tesseract) and set the `TESSERACT_CMD` environment variable to the installed binary path if it's not in your `PATH`.
+
 Run the app locally:
 ```bash
 streamlit run app/main.py
 ```
+
+If the browser does not prompt for camera access you can upload an image instead when running the app. Make sure to open `http://localhost:8501` in a browser that allows camera permissions.
 
 The database schema can be initialized using the SQL in `sql/schema.sql`.
 

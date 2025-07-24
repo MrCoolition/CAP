@@ -1,6 +1,7 @@
 import io
 import base64
 import logging
+import os
 import streamlit as st
 import psycopg2
 from openai import OpenAI
@@ -16,6 +17,10 @@ DB_PORT = st.secrets["database"]["AIVEN_PORT"]
 DB_NAME = st.secrets["database"]["AIVEN_DB"]
 DB_USER = st.secrets["database"]["AIVEN_USER"]
 DB_PASSWORD = st.secrets["database"]["AIVEN_PASSWORD"]
+
+TESSERACT_CMD = os.getenv("TESSERACT_CMD")
+if TESSERACT_CMD:
+    pytesseract.pytesseract.tesseract_cmd = TESSERACT_CMD
 
 if not BOOF_API_KEY:
     st.error("BOOF_API_KEY not set.")
@@ -89,7 +94,14 @@ def save_summary(conn, image_id, summary, actions):
 def ocr_image(image_bytes):
     logger.debug("Running OCR on captured image")
     image = Image.open(io.BytesIO(image_bytes))
-    return pytesseract.image_to_string(image)
+    try:
+        return pytesseract.image_to_string(image)
+    except pytesseract.TesseractNotFoundError:
+        logger.exception("Tesseract executable not found")
+        st.error(
+            "Tesseract OCR is not installed or not found. Set the TESSERACT_CMD environment variable if needed."
+        )
+        return ""
 
 
 def gpt_vision(image_bytes, prompt, model="gpt-4o"):
@@ -121,6 +133,9 @@ def main():
     conn = connect_db()
 
     picture = st.camera_input("Take a picture")
+    if not picture:
+        picture = st.file_uploader("Or upload an image", type=["png", "jpg", "jpeg"])
+
     if picture:
         logger.info("Image captured")
         image_bytes = picture.getvalue()
