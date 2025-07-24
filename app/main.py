@@ -1,4 +1,3 @@
-import os
 import io
 import base64
 import logging
@@ -7,18 +6,26 @@ import psycopg2
 from openai import OpenAI
 from PIL import Image
 import pytesseract
-# Initialize the OpenAI client using the BOOF_API_KEY environment variable
-# if available. Fallback to the standard OPENAI_API_KEY so the application
-# remains compatible with setups that already use that name.
-API_KEY = (
-    os.getenv("BOOF_API_KEY")
-    or os.getenv("OPENAI_API_KEY")
-    or st.secrets.get("openai_api_key")
-)
-client = OpenAI(api_key=API_KEY) if API_KEY else None
-DB_URL = os.getenv("DATABASE_URL")
 
-log_level = os.getenv("LOG_LEVEL", "INFO").upper()
+BOOF_API_KEY = st.secrets["database"]["BOOF_API_KEY"]
+client = OpenAI(api_key=BOOF_API_KEY)
+
+# Individual database connection parameters
+DB_HOST = st.secrets["database"]["AIVEN_HOST"]
+DB_PORT = st.secrets["database"]["AIVEN_PORT"]
+DB_NAME = st.secrets["database"]["AIVEN_DB"]
+DB_USER = st.secrets["database"]["AIVEN_USER"]
+DB_PASSWORD = st.secrets["database"]["AIVEN_PASSWORD"]
+
+if not BOOF_API_KEY:
+    st.error("BOOF_API_KEY not set.")
+    st.stop()
+
+if not all([DB_HOST, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD]):
+    st.error("DB connection params incomplete.")
+    st.stop()
+
+log_level = st.secrets.get("LOG_LEVEL", "INFO").upper()
 logging.basicConfig(
     level=log_level,
     format="%(asctime)s %(levelname)s %(name)s - %(message)s",
@@ -28,7 +35,13 @@ logger = logging.getLogger(__name__)
 
 def connect_db():
     logger.info("Connecting to database")
-    return psycopg2.connect(DB_URL)
+    return psycopg2.connect(
+        host=DB_HOST,
+        port=DB_PORT,
+        dbname=DB_NAME,
+        user=DB_USER,
+        password=DB_PASSWORD,
+    )
 
 
 def save_image(conn, user_id, image_bytes):
@@ -82,10 +95,6 @@ def ocr_image(image_bytes):
 def gpt_vision(image_bytes, prompt, model="gpt-4o"):
     """Query the OpenAI vision model with ``image_bytes`` and ``prompt``."""
 
-    if client is None:
-        logger.warning("OpenAI client not configured")
-        return ""
-
     b64 = base64.b64encode(image_bytes).decode()
     messages = [
         {
@@ -106,9 +115,6 @@ def main():
     logger.info("Starting Capture Application")
     st.title("Capture Application")
 
-    if client is None:
-        st.error("OpenAI API key not configured")
-        st.stop()
 
     user_id = "anon"
     logger.info("User ID: %s", user_id)
