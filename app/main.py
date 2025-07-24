@@ -107,7 +107,14 @@ def mistral_ocr(image_bytes):
         "https://api.mistral.ai/v1/ocr", json=payload, headers=headers, timeout=30
     )
     resp.raise_for_status()
-    return resp.json().get("text", "")
+    data = resp.json()
+    # Recent API versions return a list of pages with Markdown content instead of
+    # a plain ``text`` field. Combine the Markdown from all pages to keep
+    # backwards compatibility with older responses.
+    if "pages" in data:
+        markdown_parts = [p.get("markdown", "") for p in data.get("pages", [])]
+        return "\n".join(filter(None, markdown_parts))
+    return data.get("text", "")
 
 
 def ocr_image(image_bytes):
