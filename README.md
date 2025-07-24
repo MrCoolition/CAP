@@ -35,6 +35,11 @@ Store the OpenAI key as `BOOF_API_KEY` in the same section and optionally
 include `MISTRAL_API_KEY` for the Mistral OCR service. No environment
 variable lookup is performed by the app.
 
+Recent versions of Streamlit deprecated the ``use_column_width`` argument
+used by ``st.image``. The application now relies on ``use_container_width``
+instead. If you see a deprecation warning, update the app to the latest
+code and ensure your Streamlit package is up to date.
+
 
 ## API Service
 
@@ -54,4 +59,6 @@ via the environment variables `AIVEN_HOST`, `AIVEN_PORT`, `AIVEN_DB`,
 If the app displays the message `Mistral OCR unavailable. Using GPT Vision only
 for text extraction.` it means the Mistral service failed or is not configured.
 Provide a valid `MISTRAL_API_KEY` in `st.secrets` to enable the dedicated OCR
-service.
+service. Check the terminal output for log messages starting with
+`Mistral OCR failed` or `Mistral OCR not configured` to determine
+whether the API key is missing or the remote service is unreachable.
