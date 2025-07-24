@@ -22,9 +22,8 @@ streamlit run app/main.py
 
 The database schema can be initialized using the SQL in `sql/schema.sql`.
 
-Environment variables required:
-- `DATABASE_URL` (e.g. `postgresql://user:pass@localhost:5432/dbname`)
-
-The OpenAI API key must be stored in `st.secrets` as `BOOF_API_KEY` under the
-`[database]` section. No environment variable lookup is performed.
+Configuration values are loaded exclusively from `st.secrets`.
+Place your PostgreSQL connection string in `DATABASE_URL` under the
+`[database]` section and store the OpenAI key as `BOOF_API_KEY` in the same
+section. No environment variable lookup is performed by the app.
 

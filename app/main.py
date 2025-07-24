@@ -1,4 +1,3 @@
-import os
 import io
 import base64
 import logging
@@ -10,9 +9,9 @@ import pytesseract
 
 BOOF_API_KEY = st.secrets["database"]["BOOF_API_KEY"]
 client = OpenAI(api_key=BOOF_API_KEY)
-DB_URL = os.getenv("DATABASE_URL")
+DB_URL = st.secrets["database"]["DATABASE_URL"]
 
-log_level = os.getenv("LOG_LEVEL", "INFO").upper()
+log_level = st.secrets.get("LOG_LEVEL", "INFO").upper()
 logging.basicConfig(
     level=log_level,
     format="%(asctime)s %(levelname)s %(name)s - %(message)s",
