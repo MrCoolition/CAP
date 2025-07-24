@@ -1,12 +1,9 @@
 import io
 import base64
 import logging
-import os
 import streamlit as st
 import psycopg2
 from openai import OpenAI
-from PIL import Image
-import pytesseract
 import requests
 
 BOOF_API_KEY = st.secrets["database"]["BOOF_API_KEY"]
@@ -20,10 +17,6 @@ DB_PORT = st.secrets["database"]["AIVEN_PORT"]
 DB_NAME = st.secrets["database"]["AIVEN_DB"]
 DB_USER = st.secrets["database"]["AIVEN_USER"]
 DB_PASSWORD = st.secrets["database"]["AIVEN_PASSWORD"]
-
-TESSERACT_CMD = os.getenv("TESSERACT_CMD")
-if TESSERACT_CMD:
-    pytesseract.pytesseract.tesseract_cmd = TESSERACT_CMD
 
 if not BOOF_API_KEY:
     st.error("BOOF_API_KEY not set.")
@@ -114,23 +107,30 @@ def mistral_ocr(image_bytes):
 
 
 def ocr_image(image_bytes):
+    """Extract text using both Mistral OCR and GPT Vision."""
     logger.debug("Running OCR on captured image")
+
+    text_mistral = ""
     if MISTRAL_API_KEY:
         try:
-            return mistral_ocr(image_bytes)
+            text_mistral = mistral_ocr(image_bytes).strip()
         except Exception as exc:
             logger.warning("Mistral OCR failed: %s", exc)
+    else:
+        logger.warning("Mistral OCR not configured")
 
-    image = Image.open(io.BytesIO(image_bytes))
-    try:
-        return pytesseract.image_to_string(image)
-    except pytesseract.TesseractNotFoundError:
-        logger.warning("Tesseract executable not found, falling back to GPT Vision")
+    if not text_mistral:
         st.warning(
-            "OCR services unavailable. Falling back to GPT Vision for text extraction."
+            "Mistral OCR unavailable. Using GPT Vision only for text extraction."
         )
-        # Use the vision model to extract text from the image
-        return gpt_vision(image_bytes, "Extract the text from this image as plain text")
+
+    text_gpt = gpt_vision(
+        image_bytes, "Extract the text from this image as plain text"
+    ).strip()
+
+    if text_mistral and text_gpt and text_mistral != text_gpt:
+        return text_mistral + "\n" + text_gpt
+    return text_mistral or text_gpt
 
 
 def gpt_vision(image_bytes, prompt, model="gpt-4o"):
@@ -169,6 +169,7 @@ def main():
         logger.info("Image captured")
         image_bytes = picture.getvalue()
         image_id = save_image(conn, user_id, image_bytes)
+        st.image(image_bytes, caption="Captured image", use_column_width=True)
 
         with st.spinner("Processing image..."):
             logger.info("Running OCR")

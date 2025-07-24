@@ -4,7 +4,7 @@ A Streamlit application for capturing images and extracting actionable knowledge
 
 ## Features
 - **Image Capture**: Use camera input to take pictures of whiteboards, notebooks or any other source.
-- **Mistral OCR & GPT Vision**: Extract text from handwriting and typed content. Convert diagrams to Markdown.
+- **Mistral OCR & GPT Vision**: Combine both services to extract text and convert diagrams to Markdown.
 - **Summaries & Next Actions**: Summarize the captured content and suggest next steps.
 - **PostgreSQL Storage**: All data is stored in a dedicated schema.
 
@@ -15,17 +15,9 @@ Install dependencies:
 pip install -r requirements.txt
 ```
 
-The OCR functionality uses the Mistral service when a `MISTRAL_API_KEY` is provided.
-If Mistral is not configured the app falls back to the Tesseract engine when available.
-On Ubuntu install Tesseract with:
-
-```bash
-sudo apt-get install tesseract-ocr
-```
-
-On Windows download it from [https://github.com/tesseract-ocr/tesseract](https://github.com/tesseract-ocr/tesseract) and set the `TESSERACT_CMD` environment variable to the installed binary path if it's not in your `PATH`.
-
-If you are deploying to an environment where system packages cannot be installed (e.g. Streamlit Community Cloud), rely on the Mistral OCR service or the GPT Vision fallback built into the app. When Tesseract is placed in a custom location, set the `TESSERACT_CMD` variable so `pytesseract` can find it.
+The app combines Mistral OCR with OpenAI's vision models. Provide a `MISTRAL_API_KEY`
+in `st.secrets` to enable the Mistral service. GPT Vision is always used alongside
+Mistral to refine the extracted text.
 
 Run the app locally:
 ```bash
@@ -56,3 +48,10 @@ uvicorn app.api:app --host 0.0.0.0 --port 8000
 The service uses the same database credentials as the Streamlit app, provided
 via the environment variables `AIVEN_HOST`, `AIVEN_PORT`, `AIVEN_DB`,
 `AIVEN_USER` and `AIVEN_PASSWORD`.
+
+## Troubleshooting
+
+If the app displays the message `Mistral OCR unavailable. Using GPT Vision only
+for text extraction.` it means the Mistral service failed or is not configured.
+Provide a valid `MISTRAL_API_KEY` in `st.secrets` to enable the dedicated OCR
+service.
