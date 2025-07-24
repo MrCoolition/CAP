@@ -1,14 +1,19 @@
 import os
 import io
+import base64
 import streamlit as st
 import psycopg2
-import openai
+from openai import OpenAI
 from PIL import Image
 import pytesseract
 
 from auth import authenticate
 
-openai.api_key = os.getenv("OPENAI_API_KEY")
+# Initialize the OpenAI client using the BOOF_API_KEY environment variable
+# if available. Fallback to the standard OPENAI_API_KEY so the application
+# remains compatible with setups that already use that name.
+API_KEY = os.getenv("BOOF_API_KEY") or os.getenv("OPENAI_API_KEY")
+client = OpenAI(api_key=API_KEY) if API_KEY else None
 DB_URL = os.getenv("DATABASE_URL")
 
 
@@ -50,21 +55,34 @@ def ocr_image(image_bytes):
     return pytesseract.image_to_string(image)
 
 
-def gpt_vision(image_bytes, prompt):
-    if not openai.api_key:
+def gpt_vision(image_bytes, prompt, model="gpt-4o"):
+    """Query the OpenAI vision model with ``image_bytes`` and ``prompt``."""
+
+    if client is None:
         return ""
-    response = openai.ChatCompletion.create(
-        model="gpt-4-vision-preview",
-        messages=[
-            {"role": "user", "content": [{"type": "text", "text": prompt}, {"type": "image", "image": image_bytes}]},
-        ],
-    )
-    return response.choices[0].message.content
+
+    b64 = base64.b64encode(image_bytes).decode()
+    messages = [
+        {
+            "role": "user",
+            "content": [
+                {"type": "image_url", "image_url": {"url": f"data:image/png;base64,{b64}"}},
+                {"type": "text", "text": prompt},
+            ],
+        }
+    ]
+
+    resp = client.chat.completions.create(model=model, messages=messages)
+    return resp.choices[0].message.content
 
 
 def main():
     st.title("Capture Application")
     if not authenticate():
+        st.stop()
+
+    if client is None:
+        st.error("OpenAI API key not configured")
         st.stop()
 
     user_id = st.session_state.get("token", {}).get("sub", "anon")
