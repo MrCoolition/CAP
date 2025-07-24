@@ -7,15 +7,9 @@ import psycopg2
 from openai import OpenAI
 from PIL import Image
 import pytesseract
-# Initialize the OpenAI client using the BOOF_API_KEY environment variable
-# if available. Fallback to the standard OPENAI_API_KEY so the application
-# remains compatible with setups that already use that name.
-API_KEY = (
-    os.getenv("BOOF_API_KEY")
-    or os.getenv("OPENAI_API_KEY")
-    or st.secrets.get("openai_api_key")
-)
-client = OpenAI(api_key=API_KEY) if API_KEY else None
+
+BOOF_API_KEY = st.secrets["database"]["BOOF_API_KEY"]
+client = OpenAI(api_key=BOOF_API_KEY)
 DB_URL = os.getenv("DATABASE_URL")
 
 log_level = os.getenv("LOG_LEVEL", "INFO").upper()
@@ -82,10 +76,6 @@ def ocr_image(image_bytes):
 def gpt_vision(image_bytes, prompt, model="gpt-4o"):
     """Query the OpenAI vision model with ``image_bytes`` and ``prompt``."""
 
-    if client is None:
-        logger.warning("OpenAI client not configured")
-        return ""
-
     b64 = base64.b64encode(image_bytes).decode()
     messages = [
         {
@@ -106,9 +96,6 @@ def main():
     logger.info("Starting Capture Application")
     st.title("Capture Application")
 
-    if client is None:
-        st.error("OpenAI API key not configured")
-        st.stop()
 
     user_id = "anon"
     logger.info("User ID: %s", user_id)
