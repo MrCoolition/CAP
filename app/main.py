@@ -94,13 +94,17 @@ def mistral_ocr(image_bytes):
 
     logger.debug("Calling Mistral OCR service")
     b64 = base64.b64encode(image_bytes).decode()
+    data_uri = f"data:image/png;base64,{b64}"
+    payload = {
+        "model": "mistral-ocr-latest",
+        "document": {"type": "image_url", "image_url": data_uri},
+    }
     headers = {
         "Authorization": f"Bearer {MISTRAL_API_KEY}",
         "Content-Type": "application/json",
     }
-    data = {"image": b64}
     resp = requests.post(
-        "https://api.mistral.ai/v1/ocr", json=data, headers=headers, timeout=30
+        "https://api.mistral.ai/v1/ocr", json=payload, headers=headers, timeout=30
     )
     resp.raise_for_status()
     return resp.json().get("text", "")
