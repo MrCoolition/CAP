@@ -56,9 +56,10 @@ via the environment variables `AIVEN_HOST`, `AIVEN_PORT`, `AIVEN_DB`,
 
 ## Troubleshooting
 
-If the app displays the message `Mistral OCR unavailable. Using GPT Vision only
-for text extraction.` it means the Mistral service failed or is not configured.
-Provide a valid `MISTRAL_API_KEY` in `st.secrets` to enable the dedicated OCR
-service. Check the terminal output for log messages starting with
-`Mistral OCR failed` or `Mistral OCR not configured` to determine
-whether the API key is missing or the remote service is unreachable.
+If the app displays a message beginning with `Mistral OCR unavailable` it means
+the Mistral service failed or is not configured. The warning now includes the
+underlying error when available. Provide a valid `MISTRAL_API_KEY` in
+`st.secrets` to enable the dedicated OCR service. Check the terminal output for
+log messages starting with `Mistral OCR failed` or `Mistral OCR not configured`
+to determine whether the API key is missing or the remote service is
+unreachable.

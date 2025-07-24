@@ -115,18 +115,24 @@ def ocr_image(image_bytes):
     logger.debug("Running OCR on captured image")
 
     text_mistral = ""
+    error_msg = ""
     if MISTRAL_API_KEY:
         try:
             text_mistral = mistral_ocr(image_bytes).strip()
         except Exception as exc:
+            error_msg = str(exc)
             logger.warning("Mistral OCR failed: %s", exc)
     else:
+        error_msg = "MISTRAL_API_KEY missing"
         logger.warning("Mistral OCR not configured")
 
     if not text_mistral:
-        st.warning(
-            "Mistral OCR unavailable. Using GPT Vision only for text extraction."
-        )
+        msg = "Mistral OCR unavailable. Using GPT Vision only for text extraction."
+        if error_msg:
+            msg = (
+                f"Mistral OCR unavailable ({error_msg}). Using GPT Vision only for text extraction."
+            )
+        st.warning(msg)
 
     text_gpt = gpt_vision(
         image_bytes, "Extract the text from this image as plain text"
