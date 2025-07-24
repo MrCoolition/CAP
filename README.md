@@ -23,7 +23,8 @@ streamlit run app/main.py
 The database schema can be initialized using the SQL in `sql/schema.sql`.
 
 Configuration values are loaded exclusively from `st.secrets`.
-Place your PostgreSQL connection string in `DATABASE_URL` under the
-`[database]` section and store the OpenAI key as `BOOF_API_KEY` in the same
-section. No environment variable lookup is performed by the app.
+Provide the database credentials under the `[database]` section using
+`AIVEN_HOST`, `AIVEN_PORT`, `AIVEN_DB`, `AIVEN_USER`, and `AIVEN_PASSWORD`.
+Store the OpenAI key as `BOOF_API_KEY` in the same section. No environment
+variable lookup is performed by the app.
 

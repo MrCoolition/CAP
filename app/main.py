@@ -9,7 +9,21 @@ import pytesseract
 
 BOOF_API_KEY = st.secrets["database"]["BOOF_API_KEY"]
 client = OpenAI(api_key=BOOF_API_KEY)
-DB_URL = st.secrets["database"]["DATABASE_URL"]
+
+# Individual database connection parameters
+DB_HOST = st.secrets["database"]["AIVEN_HOST"]
+DB_PORT = st.secrets["database"]["AIVEN_PORT"]
+DB_NAME = st.secrets["database"]["AIVEN_DB"]
+DB_USER = st.secrets["database"]["AIVEN_USER"]
+DB_PASSWORD = st.secrets["database"]["AIVEN_PASSWORD"]
+
+if not BOOF_API_KEY:
+    st.error("BOOF_API_KEY not set.")
+    st.stop()
+
+if not all([DB_HOST, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD]):
+    st.error("DB connection params incomplete.")
+    st.stop()
 
 log_level = st.secrets.get("LOG_LEVEL", "INFO").upper()
 logging.basicConfig(
@@ -21,7 +35,13 @@ logger = logging.getLogger(__name__)
 
 def connect_db():
     logger.info("Connecting to database")
-    return psycopg2.connect(DB_URL)
+    return psycopg2.connect(
+        host=DB_HOST,
+        port=DB_PORT,
+        dbname=DB_NAME,
+        user=DB_USER,
+        password=DB_PASSWORD,
+    )
 
 
 def save_image(conn, user_id, image_bytes):
