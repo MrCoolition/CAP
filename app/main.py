@@ -170,8 +170,8 @@ def gpt_vision(image_bytes, prompt, model="gpt-4o"):
 
 
 def main():
-    logger.info("Starting Capture Application")
-    st.title("Capture Application")
+    logger.info("Starting CAP")
+    st.title("cap")
 
 
     user_id = "anon"
