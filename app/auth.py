@@ -14,7 +14,8 @@ def authenticate():
         st.error("Auth0 configuration missing")
         st.stop()
 
-    token = login_button(client_id=AUTH0_CLIENT_ID, domain=AUTH0_DOMAIN)
+    # pass credentials positionally to avoid mismatched keyword names
+    token = login_button(AUTH0_CLIENT_ID, AUTH0_DOMAIN)
     if token:
         st.session_state["token"] = token
         return True
