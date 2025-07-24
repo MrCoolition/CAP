@@ -23,6 +23,9 @@ streamlit run app/main.py
 The database schema can be initialized using the SQL in `sql/schema.sql`.
 
 Environment variables required:
-- `OPENAI_API_KEY`
+- `OPENAI_API_KEY` or `BOOF_API_KEY`
 - `DATABASE_URL` (e.g. `postgresql://user:pass@localhost:5432/dbname`)
+
+The app will also look for `openai_api_key` in `st.secrets` when running on
+Streamlit Cloud.
 

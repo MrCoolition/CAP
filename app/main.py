@@ -10,7 +10,11 @@ import pytesseract
 # Initialize the OpenAI client using the BOOF_API_KEY environment variable
 # if available. Fallback to the standard OPENAI_API_KEY so the application
 # remains compatible with setups that already use that name.
-API_KEY = os.getenv("BOOF_API_KEY") or os.getenv("OPENAI_API_KEY")
+API_KEY = (
+    os.getenv("BOOF_API_KEY")
+    or os.getenv("OPENAI_API_KEY")
+    or st.secrets.get("openai_api_key")
+)
 client = OpenAI(api_key=API_KEY) if API_KEY else None
 DB_URL = os.getenv("DATABASE_URL")
 
