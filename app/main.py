@@ -7,9 +7,6 @@ import psycopg2
 from openai import OpenAI
 from PIL import Image
 import pytesseract
-
-from auth import authenticate
-
 # Initialize the OpenAI client using the BOOF_API_KEY environment variable
 # if available. Fallback to the standard OPENAI_API_KEY so the application
 # remains compatible with setups that already use that name.
@@ -104,15 +101,13 @@ def gpt_vision(image_bytes, prompt, model="gpt-4o"):
 def main():
     logger.info("Starting Capture Application")
     st.title("Capture Application")
-    if not authenticate():
-        st.stop()
 
     if client is None:
         st.error("OpenAI API key not configured")
         st.stop()
 
-    user_id = st.session_state.get("token", {}).get("sub", "anon")
-    logger.info("Authenticated user: %s", user_id)
+    user_id = "anon"
+    logger.info("User ID: %s", user_id)
     conn = connect_db()
 
     picture = st.camera_input("Take a picture")

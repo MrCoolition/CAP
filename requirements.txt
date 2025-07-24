@@ -1,6 +1,5 @@
 streamlit
 openai
 psycopg2-binary
-streamlit-auth0-component
 pytesseract
 Pillow
