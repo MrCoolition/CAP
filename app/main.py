@@ -97,11 +97,12 @@ def ocr_image(image_bytes):
     try:
         return pytesseract.image_to_string(image)
     except pytesseract.TesseractNotFoundError:
-        logger.exception("Tesseract executable not found")
-        st.error(
-            "Tesseract OCR is not installed or not found. Set the TESSERACT_CMD environment variable if needed."
+        logger.warning("Tesseract executable not found, falling back to GPT Vision")
+        st.warning(
+            "Tesseract OCR is not available. Falling back to GPT Vision for text extraction."
         )
-        return ""
+        # Use the vision model to extract text from the image
+        return gpt_vision(image_bytes, "Extract the text from this image as plain text")
 
 
 def gpt_vision(image_bytes, prompt, model="gpt-4o"):
