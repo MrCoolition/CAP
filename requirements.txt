@@ -1,5 +1,5 @@
 streamlit
-openai
+openai>=1.0
 psycopg2-binary
 pytesseract
 Pillow
