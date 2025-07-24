@@ -28,3 +28,16 @@ Provide the database credentials under the `[database]` section using
 Store the OpenAI key as `BOOF_API_KEY` in the same section. No environment
 variable lookup is performed by the app.
 
+
+## API Service
+
+A FastAPI application in `app/api.py` exposes CRUD endpoints for images,
+extracted text, diagrams and summaries. Start the service with:
+
+```bash
+uvicorn app.api:app --host 0.0.0.0 --port 8000
+```
+
+The service uses the same database credentials as the Streamlit app, provided
+via the environment variables `AIVEN_HOST`, `AIVEN_PORT`, `AIVEN_DB`,
+`AIVEN_USER` and `AIVEN_PASSWORD`.
