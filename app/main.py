@@ -7,9 +7,12 @@ import psycopg2
 from openai import OpenAI
 from PIL import Image
 import pytesseract
+import requests
 
 BOOF_API_KEY = st.secrets["database"]["BOOF_API_KEY"]
 client = OpenAI(api_key=BOOF_API_KEY)
+
+MISTRAL_API_KEY = st.secrets["database"].get("MISTRAL_API_KEY")
 
 # Individual database connection parameters
 DB_HOST = st.secrets["database"]["AIVEN_HOST"]
@@ -91,15 +94,40 @@ def save_summary(conn, image_id, summary, actions):
         conn.commit()
 
 
+def mistral_ocr(image_bytes):
+    """Use the Mistral OCR service to extract text."""
+    if not MISTRAL_API_KEY:
+        raise RuntimeError("MISTRAL_API_KEY not configured")
+
+    logger.debug("Calling Mistral OCR service")
+    b64 = base64.b64encode(image_bytes).decode()
+    headers = {
+        "Authorization": f"Bearer {MISTRAL_API_KEY}",
+        "Content-Type": "application/json",
+    }
+    data = {"image": b64}
+    resp = requests.post(
+        "https://api.mistral.ai/v1/ocr", json=data, headers=headers, timeout=30
+    )
+    resp.raise_for_status()
+    return resp.json().get("text", "")
+
+
 def ocr_image(image_bytes):
     logger.debug("Running OCR on captured image")
+    if MISTRAL_API_KEY:
+        try:
+            return mistral_ocr(image_bytes)
+        except Exception as exc:
+            logger.warning("Mistral OCR failed: %s", exc)
+
     image = Image.open(io.BytesIO(image_bytes))
     try:
         return pytesseract.image_to_string(image)
     except pytesseract.TesseractNotFoundError:
         logger.warning("Tesseract executable not found, falling back to GPT Vision")
         st.warning(
-            "Tesseract OCR is not available. Falling back to GPT Vision for text extraction."
+            "OCR services unavailable. Falling back to GPT Vision for text extraction."
         )
         # Use the vision model to extract text from the image
         return gpt_vision(image_bytes, "Extract the text from this image as plain text")
