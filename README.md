@@ -24,7 +24,13 @@ streamlit run app/main.py
 The database schema can be initialized using the SQL in `sql/schema.sql`.
 
 Environment variables required:
-- `AUTH0_CLIENT_ID`
-- `AUTH0_DOMAIN`
 - `OPENAI_API_KEY`
 - `DATABASE_URL` (e.g. `postgresql://user:pass@localhost:5432/dbname`)
+
+Auth0 credentials must be provided in `st.secrets` under an `auth0` section:
+
+```toml
+[auth0]
+client_id = "..."
+domain = "..."
+```
