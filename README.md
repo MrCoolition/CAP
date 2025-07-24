@@ -34,3 +34,20 @@ Auth0 credentials must be provided in `st.secrets` under an `auth0` section:
 client_id = "..."
 domain = "..."
 ```
+
+### Auth0 setup
+
+When configuring the Auth0 application, ensure the Streamlit component's
+callback URL is whitelisted. Add the following URL to **Allowed Callback URLs**
+in your Auth0 application settings:
+
+```
+https://<your-domain>/~/+/component/auth0_component.login_button/index.html
+```
+
+Replace `<your-domain>` with the host where the app runs. For example, when
+deployed to Streamlit Community Cloud the URL may look like
+`https://capture.streamlit.app/~/+/component/auth0_component.login_button/index.html`.
+
+Without this URL in the allow list, login attempts will fail with a "Callback
+URL mismatch" error.
