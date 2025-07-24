@@ -9,7 +9,7 @@ import requests
 BOOF_API_KEY = st.secrets["database"]["BOOF_API_KEY"]
 client = OpenAI(api_key=BOOF_API_KEY)
 
-MISTRAL_API_KEY = st.secrets["database"].get("MISTRAL_API_KEY")
+MISTRAL_API_KEY = st.secrets["database"]["MISTRAL_API_KEY")
 
 # Individual database connection parameters
 DB_HOST = st.secrets["database"]["AIVEN_HOST"]
