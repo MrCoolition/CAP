@@ -1,4 +1,10 @@
-import streamlit as st
+try:
+    import streamlit as st
+except ModuleNotFoundError as exc:
+    raise ImportError(
+        "streamlit is required for the CAP app. "
+        "Install dependencies using `pip install -r requirements.txt`."
+    ) from exc
 
 
 def back_camera_input(label="Take a picture", **kwargs):

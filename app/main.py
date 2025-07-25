@@ -1,7 +1,13 @@
 import io
 import base64
 import logging
-import streamlit as st
+try:
+    import streamlit as st
+except ModuleNotFoundError as exc:
+    raise ImportError(
+        "streamlit is required to run this app. "
+        "Install dependencies using `pip install -r requirements.txt`."
+    ) from exc
 import psycopg2
 from openai import OpenAI
 import requests
