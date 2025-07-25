@@ -11,7 +11,6 @@ except ModuleNotFoundError as exc:
 import psycopg2
 from openai import OpenAI
 import requests
-from app.back_camera_input import back_camera_input
 
 BOOF_API_KEY = st.secrets["database"]["BOOF_API_KEY"]
 client = OpenAI(api_key=BOOF_API_KEY)
@@ -185,7 +184,7 @@ def main():
     logger.info("User ID: %s", user_id)
     conn = connect_db()
 
-    picture = back_camera_input("Take a picture")
+    picture = st.camera_input("Take a picture")
     if not picture:
         picture = st.file_uploader("Or upload an image", type=["png", "jpg", "jpeg"])
 
