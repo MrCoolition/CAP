@@ -11,7 +11,9 @@ except ModuleNotFoundError as exc:
 import psycopg2
 from openai import OpenAI
 import requests
-from app.html_camera_input import back_camera_uploader
+# Use a relative import so ``main.py`` works regardless of how the module is
+# executed (e.g. ``streamlit run app/main.py`` or ``python -m app.main``).
+from .html_camera_input import back_camera_uploader
 
 BOOF_API_KEY = st.secrets["database"]["BOOF_API_KEY"]
 client = OpenAI(api_key=BOOF_API_KEY)
