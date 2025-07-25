@@ -63,14 +63,12 @@ via the environment variables `AIVEN_HOST`, `AIVEN_PORT`, `AIVEN_DB`,
 
 ## Troubleshooting
 
-If you encounter `ModuleNotFoundError` when starting the app, ensure all
-dependencies are installed:
-
-```bash
-pip install -r requirements.txt
-```
-
-The error typically appears when ``streamlit`` is missing from the Python
+If you encounter `ModuleNotFoundError` when starting the app, double-check that
+all dependencies listed in `requirements.txt` are installed. Streamlit
+Community Cloud automatically installs these packages when the app is deployed,
+so updating the file and re-deploying is usually sufficient. Locally you can
+run `pip install -r requirements.txt` to replicate the same environment. The
+error typically appears when ``streamlit`` is missing from the Python
 environment.
 
 If the app displays a message beginning with `Mistral OCR unavailable` it means
