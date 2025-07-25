@@ -3,7 +3,8 @@
 A Streamlit application for capturing images and extracting actionable knowledge using OpenAI vision models.
 
 ## Features
-- **Image Capture**: Use camera input to take pictures of whiteboards, notebooks or any other source.
+- **Image Capture**: Use camera input to take pictures of whiteboards, notebooks or any other source. The app
+  defaults to the device's back camera so you don't start in selfie mode.
 - **Mistral OCR & GPT Vision**: Combine both services to extract text and convert diagrams to Markdown.
 - **Summaries & Next Actions**: Summarize the captured content and suggest next steps.
 - **PostgreSQL Storage**: All data is stored in a dedicated schema.

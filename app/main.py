@@ -178,7 +178,11 @@ def main():
     logger.info("User ID: %s", user_id)
     conn = connect_db()
 
-    picture = st.camera_input("Take a picture")
+    try:
+        picture = st.camera_input("Take a picture", facing_mode="environment")
+    except TypeError:
+        # ``facing_mode`` not supported in older Streamlit versions
+        picture = st.camera_input("Take a picture")
     if not picture:
         picture = st.file_uploader("Or upload an image", type=["png", "jpg", "jpeg"])
 
