@@ -185,11 +185,13 @@ def main():
     logger.info("User ID: %s", user_id)
     conn = connect_db()
 
-    picture = st.file_uploader(
-        "Upload an image",
-        type=["png", "jpg", "jpeg"],
-        key="camera",
-    )
+    picture = st.camera_input("Take a picture", key="camera")
+    if not picture:
+        picture = st.file_uploader(
+            "Upload an image",
+            type=["png", "jpg", "jpeg"],
+            key="uploader",
+        )
 
     if picture:
         logger.info("Image captured")

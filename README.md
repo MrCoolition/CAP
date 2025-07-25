@@ -3,7 +3,7 @@
 A Streamlit application for capturing images and extracting actionable knowledge using OpenAI vision models.
 
 ## Features
-- **Image Capture**: Upload or capture photos using Streamlit's file uploader.
+- **Image Capture**: Take a picture using Streamlit's camera widget with a fallback to file upload.
 - **Mistral OCR & GPT Vision**: Combine both services to extract text and convert diagrams to Markdown.
 - **Summaries & Next Actions**: Summarize the captured content and suggest next steps.
 - **PostgreSQL Storage**: All data is stored in a dedicated schema.
@@ -24,9 +24,10 @@ Run the app locally:
 streamlit run app/main.py
 ```
 
-If your browser does not support camera access you can still upload an image
-when running the app. Open `http://localhost:8501` in any modern browser to
-capture or upload a photo.
+The app uses `st.camera_input` to capture photos. If the widget is not
+supported in your browser you can still upload an image when running the app.
+Open `http://localhost:8501` in any modern browser to capture or upload a
+photo.
 
 The database schema can be initialized using the SQL in `sql/schema.sql`.
 
