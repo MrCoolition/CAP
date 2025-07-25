@@ -63,6 +63,16 @@ via the environment variables `AIVEN_HOST`, `AIVEN_PORT`, `AIVEN_DB`,
 
 ## Troubleshooting
 
+If you encounter `ModuleNotFoundError` when starting the app, ensure all
+dependencies are installed:
+
+```bash
+pip install -r requirements.txt
+```
+
+The error typically appears when ``streamlit`` is missing from the Python
+environment.
+
 If the app displays a message beginning with `Mistral OCR unavailable` it means
 the Mistral service failed or is not configured. The warning now includes the
 underlying error when available. Provide a valid `MISTRAL_API_KEY` in
