@@ -5,6 +5,7 @@ import streamlit as st
 import psycopg2
 from openai import OpenAI
 import requests
+from app.back_camera_input import back_camera_input
 
 BOOF_API_KEY = st.secrets["database"]["BOOF_API_KEY"]
 client = OpenAI(api_key=BOOF_API_KEY)
@@ -178,11 +179,7 @@ def main():
     logger.info("User ID: %s", user_id)
     conn = connect_db()
 
-    try:
-        picture = st.camera_input("Take a picture", facing_mode="environment")
-    except TypeError:
-        # ``facing_mode`` not supported in older Streamlit versions
-        picture = st.camera_input("Take a picture")
+    picture = back_camera_input("Take a picture")
     if not picture:
         picture = st.file_uploader("Or upload an image", type=["png", "jpg", "jpeg"])
 
