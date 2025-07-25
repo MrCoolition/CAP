@@ -3,10 +3,10 @@
 A Streamlit application for capturing images and extracting actionable knowledge using OpenAI vision models.
 
 ## Features
-- **Image Capture**: Use the `back_camera_input()` helper to take pictures of
-  whiteboards, notebooks or any other source. The app defaults to the
-  device's back camera and falls back to the default camera when the
-  `facing_mode` option isn't supported.
+- **Image Capture**: Capture photos with Streamlit's built-in
+  `st.camera_input` widget. The widget automatically opens the device
+  camera and lets users upload an image when camera access isn't
+  available.
 - **Mistral OCR & GPT Vision**: Combine both services to extract text and convert diagrams to Markdown.
 - **Summaries & Next Actions**: Summarize the captured content and suggest next steps.
 - **PostgreSQL Storage**: All data is stored in a dedicated schema.
@@ -27,11 +27,11 @@ Run the app locally:
 streamlit run app/main.py
 ```
 
-If the browser does not prompt for camera access you can upload an image instead when running the app. Make sure to open `http://localhost:8501` in a browser that allows camera permissions.
-
-The `back_camera_input()` helper wraps `st.camera_input` and automatically
-requests the back camera when supported. It gracefully falls back to the
-default camera if ``facing_mode`` is unsupported on older Streamlit versions.
+If the browser does not prompt for camera access you can upload an image
+instead when running the app. Make sure to open `http://localhost:8501` in
+a browser that allows camera permissions. The application relies on
+`st.camera_input` so older Streamlit versions without this widget are not
+supported.
 
 The database schema can be initialized using the SQL in `sql/schema.sql`.
 
