@@ -91,6 +91,7 @@ gantt
   section Deployment
     Staging Rollout      :milestone, 2025-07-20
     Production Release   :crit, b1, after Staging Rollout, 1d
+```
 
 ### 6. Mindmap – Product Ideation
 ```mermaid
