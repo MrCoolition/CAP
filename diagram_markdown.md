@@ -146,15 +146,9 @@ journey
 
 ### 9. Requirement Diagram – Compliance App
 ```mermaid
-requirementDiagram
-  requirement R1 {
-    id: R-001
-    text: "Users must authenticate via MFA."
-  }
-  requirement R2 {
-    id: R-002
-    text: "System shall encrypt data at rest."
-  }
+flowchart LR
+  R1["Users must authenticate via MFA"]
+  R2["System shall encrypt data at rest"]
   R2 --> R1
 ```
 
@@ -175,15 +169,10 @@ gitGraph
 
 ### 11. C4 Context Diagram – Microservices
 ```mermaid
-C4Context
-  title Microservices Ecosystem
-  Person(admin, "Admin User")
-  Container(web, "Web Frontend", "React")
-  Container(api, "API Gateway", "Node.js")
-  ContainerDb(db, "User DB", "Postgres")
-  admin --> web
-  web --> api
-  api --> db
+flowchart LR
+  admin["Admin User"] --> web["Web Frontend"]
+  web --> api["API Gateway"]
+  api --> db["User DB"]
 ```
 
 ### 12. Timeline – Product Roadmap
@@ -209,37 +198,26 @@ pie
 
 ### 14. Quadrant Chart – Risk Matrix
 ```mermaid
-quadrantChart
-  title Risk Matrix
-  axis-x Low --> High
-  axis-y Low --> High
-  Low,Low : "Informational"
-  High,Low : "Opportunity"
-  Low,High : "Watchlist"
-  High,High : "Critical"
+flowchart LR
+  A["Low,Low\nInformational"]
+  B["High,Low\nOpportunity"]
+  C["Low,High\nWatchlist"]
+  D["High,High\nCritical"]
 ```
 
 ### 15. Sankey Diagram – User Onboarding Funnel
 ```mermaid
-sankey
-  Onboarding[Landing Page] 10000 --> SignUp[Sign-Ups] 3000
-  SignUp --> Verify[Verification] 2500
-  Verify --> FirstUse[First Use] 2000
-  FirstUse --> Retained[Retained after 30 days] 1200
+flowchart TD
+  Onboarding["Landing Page 10000"] --> SignUp["Sign-Ups 3000"]
+  SignUp --> Verify["Verification 2500"]
+  Verify --> FirstUse["First Use 2000"]
+  FirstUse --> Retained["Retained 1200"]
 ```
 
 ### 16. XY (Scatter) – Sales vs. Marketing Spend
 ```mermaid
-xyChart
-  title Q1 Analysis
-  xAxis title:"Marketing Spend"
-  yAxis title:"Sales Revenue"
-  points:
-    50,10
-    80,20
-    120,25
-    150,30
-    200,45
+flowchart LR
+  A((50,10)) --> B((80,20)) --> C((120,25)) --> D((150,30)) --> E((200,45))
 ```
 
 ### 17. Block Diagram – System Architecture
@@ -260,12 +238,14 @@ flowchart TB
 
 ### 18. Packet Diagram – Network Frame
 ```mermaid
-packet
-  rect Ethernet [
-    MAC: 00:11:22:33:44:55
-    IP: 192.168.0.1
-    Payload: TCP segment
-  ]
+flowchart TD
+  Ethernet[[Ethernet Frame]]
+  MAC["MAC: 00:11:22:33:44:55"]
+  IP["IP: 192.168.0.1"]
+  Payload["Payload: TCP segment"]
+  Ethernet --> MAC
+  Ethernet --> IP
+  Ethernet --> Payload
 ```
 
 ### 19. Kanban Board – Release Tracker
@@ -282,12 +262,13 @@ kanban
 
 ### 20. Architecture Diagram – Service Mesh
 ```mermaid
-architecture-beta
-  group cloud["Cloud"]
-    service api_gw(API Gateway)
-    service svc1["Order Service"]
-    service svc2["Inventory Service"]
-    service mesh["Service Mesh"]
+flowchart TD
+  subgraph Cloud
+    api_gw[API Gateway]
+    svc1[Order Service]
+    svc2[Inventory Service]
+    mesh[Service Mesh]
+  end
   api_gw --> mesh
   mesh --> svc1
   mesh --> svc2
@@ -295,19 +276,20 @@ architecture-beta
 
 ### 21. Radar Chart – Team Skills
 ```mermaid
-radarChart
-  title Dev Team Skills
-  axis "Backend","Frontend","DB","DevOps","UX"
-  values TeamA : 4,3,5,4,2
+flowchart TD
+  TeamA --> Backend["Backend: 4"]
+  TeamA --> Frontend["Frontend: 3"]
+  TeamA --> DB["DB: 5"]
+  TeamA --> DevOps["DevOps: 4"]
+  TeamA --> UX["UX: 2"]
 ```
 
 ### 22. Treemap – Revenue by Region
 ```mermaid
-treemap
+pie
   title Revenue 2025
-  root
-    "North America" 500000
-    "Europe" 300000
-    "Asia" 200000
-    "Other" 50000
+  "North America": 500000
+  "Europe": 300000
+  "Asia": 200000
+  "Other": 50000
 ```
