@@ -156,7 +156,7 @@ def ocr_image(image_bytes):
     return text_mistral or text_gpt
 
 
-def gpt_vision(image_bytes, prompt, model="gpt-4o"):
+def gpt_vision(image_bytes, prompt, model="gpt-4.1"):
     """Query the OpenAI vision model with ``image_bytes`` and ``prompt``."""
 
     b64 = base64.b64encode(image_bytes).decode()
