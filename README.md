@@ -4,7 +4,7 @@ A Streamlit application for capturing images and extracting actionable knowledge
 
 ## Features
 - **Image Capture**: Take a picture using Streamlit's camera widget with a fallback to file upload.
-- **Mistral OCR & GPT Vision**: Combine both services to extract text and convert diagrams to Markdown.
+- **Mistral OCR & GPT Vision**: Combine both services to extract text and convert diagrams to Markdown. The raw OCR is cleaned up by GPT before being saved.
 - **Summaries & Next Actions**: Summarize the captured content and suggest next steps.
 - **PostgreSQL Storage**: All data is stored in a dedicated schema.
 
@@ -17,7 +17,8 @@ pip install -r requirements.txt
 
 The app combines Mistral OCR with OpenAI's vision models. Provide a `MISTRAL_API_KEY`
 in `st.secrets` to enable the Mistral service. GPT Vision is always used alongside
-Mistral to refine the extracted text.
+Mistral to refine the extracted text. OCR output is cleaned by an additional GPT
+step before being stored.
 
 Run the app locally:
 ```bash

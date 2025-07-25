@@ -153,8 +153,33 @@ def ocr_image(image_bytes):
     ).strip()
 
     if text_mistral and text_gpt and text_mistral != text_gpt:
-        return text_mistral + "\n" + text_gpt
-    return text_mistral or text_gpt
+        combined = text_mistral + "\n" + text_gpt
+    else:
+        combined = text_mistral or text_gpt
+
+    return refine_ocr_text(combined)
+
+
+def refine_ocr_text(text, model="gpt-4.1"):
+    """Use GPT to clean up and structure OCR text."""
+    if not text:
+        return text
+
+    messages = [
+        {
+            "role": "system",
+            "content": (
+                "Clean up the OCR output. Correct typical recognition errors and "
+                "format the result as structured plain text. Use bullet points "
+                "when appropriate."
+            ),
+        },
+        {"role": "user", "content": text},
+    ]
+
+    logger.debug("Refining OCR text with LLM")
+    resp = client.chat.completions.create(model=model, messages=messages)
+    return resp.choices[0].message.content.strip()
 
 
 def gpt_vision(image_bytes, prompt, model="gpt-4.1"):
