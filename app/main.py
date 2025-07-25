@@ -9,11 +9,9 @@ except ModuleNotFoundError as exc:
         "Install dependencies using `pip install -r requirements.txt`."
     ) from exc
 import psycopg2
+
 from openai import OpenAI
 import requests
-# Use a relative import so ``main.py`` works regardless of how the module is
-# executed (e.g. ``streamlit run app/main.py`` or ``python -m app.main``).
-from .html_camera_input import back_camera_uploader
 
 BOOF_API_KEY = st.secrets["database"]["BOOF_API_KEY"]
 client = OpenAI(api_key=BOOF_API_KEY)
@@ -187,7 +185,11 @@ def main():
     logger.info("User ID: %s", user_id)
     conn = connect_db()
 
-    picture = back_camera_uploader("Take a picture")
+    picture = st.file_uploader(
+        "Upload an image",
+        type=["png", "jpg", "jpeg"],
+        key="camera",
+    )
 
     if picture:
         logger.info("Image captured")
