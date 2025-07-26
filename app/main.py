@@ -14,9 +14,14 @@ from openai import OpenAI
 import requests
 
 BOOF_API_KEY = st.secrets["database"]["BOOF_API_KEY"]
-client = OpenAI(api_key=BOOF_API_KEY)
 
 MISTRAL_API_KEY = st.secrets["database"]["MISTRAL_API_KEY"]
+
+
+@st.cache_resource(show_spinner=False)
+def get_client() -> OpenAI:
+    """Create and cache the OpenAI client."""
+    return OpenAI(api_key=BOOF_API_KEY)
 
 # Individual database connection parameters
 DB_HOST = st.secrets["database"]["AIVEN_HOST"]
@@ -41,7 +46,9 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
+@st.cache_resource(show_spinner=False)
 def connect_db():
+    """Create and cache a database connection."""
     logger.info("Connecting to database")
     return psycopg2.connect(
         host=DB_HOST,
@@ -178,6 +185,7 @@ def refine_ocr_text(text, model="gpt-4.1"):
     ]
 
     logger.debug("Refining OCR text with LLM")
+    client = get_client()
     resp = client.chat.completions.create(model=model, messages=messages)
     return resp.choices[0].message.content.strip()
 
@@ -197,6 +205,7 @@ def gpt_vision(image_bytes, prompt, model="gpt-4.1"):
     ]
 
     logger.debug("Calling OpenAI vision model with prompt: %s", prompt)
+    client = get_client()
     resp = client.chat.completions.create(model=model, messages=messages)
     return resp.choices[0].message.content
 
@@ -214,7 +223,6 @@ def main():
 
     user_id = "anon"
     logger.info("User ID: %s", user_id)
-    conn = connect_db()
 
     capture_col, result_col = st.columns([1, 1.618])
 
@@ -231,6 +239,7 @@ def main():
     if picture:
         logger.info("Image captured")
         image_bytes = picture.getvalue()
+        conn = connect_db()
         image_id = save_image(conn, user_id, image_bytes)
 
         with result_col:
