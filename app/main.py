@@ -236,7 +236,7 @@ def main():
             save_text(conn, image_id, text)
 
             logger.info("Generating diagram markdown")
-            diagram_md = gpt_vision(image_bytes, "Convert any diagrams to Markdown")
+            diagram_md = gpt_vision(image_bytes, "Convert any diagram or described process into Mermaid markdown only. Do not add explanations.")
             save_diagram(conn, image_id, diagram_md)
 
             logger.info("Generating summary and next actions")
