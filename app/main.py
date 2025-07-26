@@ -203,32 +203,42 @@ def gpt_vision(image_bytes, prompt, model="gpt-4.1"):
 
 def main():
     logger.info("Starting CAP")
+    st.set_page_config(page_title="CAP", layout="wide")
     st.title("cap")
 
+    # Apply a small amount of custom styling so the layout feels smooth.
+    st.markdown(
+        "<style>.gold-container{padding:1.618rem;}" "</style>",
+        unsafe_allow_html=True,
+    )
 
     user_id = "anon"
     logger.info("User ID: %s", user_id)
     conn = connect_db()
 
-    picture = st.camera_input("Take a picture", key="camera")
-    if not picture:
-        picture = st.file_uploader(
-            "Upload an image",
-            type=["png", "jpg", "jpeg"],
-            key="uploader",
-        )
+    capture_col, result_col = st.columns([1, 1.618])
+
+    with capture_col:
+        st.header("Capture")
+        picture = st.camera_input("Take a picture", key="camera")
+        if not picture:
+            picture = st.file_uploader(
+                "Upload an image",
+                type=["png", "jpg", "jpeg"],
+                key="uploader",
+            )
 
     if picture:
         logger.info("Image captured")
         image_bytes = picture.getvalue()
         image_id = save_image(conn, user_id, image_bytes)
-        # ``use_column_width`` was deprecated in Streamlit 1.32. Replace with
-        # the recommended ``use_container_width`` argument.
-        st.image(
-            image_bytes,
-            caption="Captured image",
-            use_container_width=True,
-        )
+
+        with result_col:
+            st.image(
+                image_bytes,
+                caption="Captured image",
+                use_container_width=True,
+            )
 
         with st.spinner("Processing image..."):
             logger.info("Running OCR")
@@ -236,7 +246,10 @@ def main():
             save_text(conn, image_id, text)
 
             logger.info("Generating diagram markdown")
-            diagram_md = gpt_vision(image_bytes, "Convert any diagram or described process into Mermaid markdown only. Do not add explanations.")
+            diagram_md = gpt_vision(
+                image_bytes,
+                "Convert any diagram or described process into Mermaid markdown only. Do not add explanations.",
+            )
             save_diagram(conn, image_id, diagram_md)
 
             logger.info("Generating summary and next actions")
@@ -246,14 +259,16 @@ def main():
 
         st.success("Image processed and data saved")
         logger.info("Image processing complete")
-        st.subheader("Extracted Text")
-        st.write(text)
-        st.subheader("Diagram Markdown")
-        st.markdown(diagram_md)
-        st.subheader("Summary")
-        st.write(summary)
-        st.subheader("Next Actions")
-        st.write(actions)
+
+        with result_col:
+            st.subheader("Extracted Text")
+            st.write(text)
+            st.subheader("Diagram Markdown")
+            st.markdown(diagram_md)
+            st.subheader("Summary")
+            st.write(summary)
+            st.subheader("Next Actions")
+            st.write(actions)
 
 
 if __name__ == "__main__":
