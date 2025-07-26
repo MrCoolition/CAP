@@ -7,6 +7,8 @@ A Streamlit application for capturing images and extracting actionable knowledge
 - **Mistral OCR & GPT Vision**: Combine both services to extract text and convert diagrams to Markdown. The raw OCR is cleaned up by GPT before being saved.
 - **Summaries & Next Actions**: Summarize the captured content and suggest next steps.
 - **PostgreSQL Storage**: All data is stored in a dedicated schema.
+- **Cached Resources**: Database connections and the OpenAI client are cached
+  to speed up app startup.
 
 ## Development
 
@@ -19,6 +21,9 @@ The app combines Mistral OCR with OpenAI's vision models. Provide a `MISTRAL_API
 in `st.secrets` to enable the Mistral service. GPT Vision is always used alongside
 Mistral to refine the extracted text. OCR output is cleaned by an additional GPT
 step before being stored.
+
+Database connections and the OpenAI client are cached so the interface loads
+quickly even on subsequent reruns.
 
 Run the app locally:
 ```bash
