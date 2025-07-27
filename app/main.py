@@ -262,8 +262,8 @@ def main():
             save_diagram(conn, image_id, diagram_md)
 
             logger.info("Generating summary and next actions")
-            summary = gpt_vision(image_bytes, "Summarize and organize the content")
-            actions = gpt_vision(image_bytes, "Generate a list of next actions from the content")
+            summary = gpt_vision(image_bytes, "Carefully analyze the image to understand the intent and purpose of the capture, succinctly Summarize and Organize the content as my personal Minister of Information")
+            actions = gpt_vision(image_bytes, "Generate a list of next actions from the content into a task list in the exact the followign format: Verb - Direct Object - Indirect Object (Buy Coffee for Sarah)")
             save_summary(conn, image_id, summary, actions)
 
         st.success("Image processed and data saved")
